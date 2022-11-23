@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        /* html{
+            min-height: 100%;
+        } */
+        body {
+            background-color: rgb(12, 47, 79);
+            min-height: 100vh;
+            display: flex;
+
+            flex-direction: row;
+            justify-content: center;
+            justify-items: center;
+            align-items: center;
+            color: rgb(169, 156, 156);
+        }
+
+        .main {
+            display: flex;
+            min-height: 100vh;
+            /* align-items: center; */
+            /* justify-items: center; */
+            flex-direction: column;
+
+        }
+
+        .option {
+
+            display: flex;
+            /* align-items: center; */
+            /* justify-items: center; */
+            flex-direction: column;
+        }
+
+        .bd {
+            width: 200px;
+        }
+
+        .dificulty {
+            width: 100%;
+        }
+
+        img {
+            display: none;
+        }
+
+        .c {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .play {
+            display: none;
+        }
+
+        /* div {
+            text-align: center;
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <img src="png1000px/fr.png" alt="" id="img" height="400px">
+        <br>
+        <input type="text" id="s">
+        <div class="option" id="option">
+            <div>
+                <input type="checkbox" name="maj" id="maj">
+                <label for="maj">Majuscule</label>
+            </div>
+            <div class="bd">
+                <input type="range" name="dif" id="dif" max="3" min="1" class="dificulty">
+                <label for="dif">Dificultée</label>
+            </div>
+            <div>
+                <input type="checkbox" name="tir" id="tir">
+                <label for="tir">Tirets</label>
+            </div>
+            <div class="pb">
+                PB: <p id="pb">0</p>
+            </div>
+            <div class="s">
+                <input type="button" value="start" id="srt">
+            </div>
+        </div>
+        <div class="play" id="play">
+
+
+            <div class="c">
+                time: <p id="timer">60</p>
+            </div>
+            <div class="st">
+                <input type="button" value="stop" id="st">
+            </div>
+            <div>
+                score: <p id="sc"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // script for cookie stuff
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        var pb 
+        if(getCookie("pb")==""){
+            setCookie("pb",0,3000)
+            pb = 0
+        }
+        else{
+            pb = parseInt(getCookie('pb'))
+        }
+        document.getElementById('s').value = ""
+        var score = 0
+        let jsonstr = `{
+                "AD": "Andorre",
+                "AE":[ "Amirats Arabe Unis","eau"],
+                "AF": "Afghanistan",
+                "AG": ["Antigua et Barbuda","Antigua"],
+                "AL": "Albanie",
+                "AM": ["Arménie","Armenie"],
+                "AO": "Angola",
+                "AR": "Argentina",
+                "AT": "Autriche",
+                "AU": "Australie",
+                "AZ": "Azerbaijan",
+                "BA": ["Bosnie Herzégovine","Bosnie Herzegovine","Bosnie"],
+                "BB": "Barbade",
+                "BD": "Bangladesh",
+                "BE": "Belgique",
+                "BF": "Burkina Faso",
+                "BG": "Bulgarie",
+                "BH": "Bahrein",
+                "BI": "Burundi",
+                "BJ": "Benin",
+                "BN": "Brunei",
+                "BO": "Bolivie",
+                "BR": ["Brésil","Bresil"],
+                "BS": "Bahamas",
+                "BT": "Bhoutan",
+                "BW": "Botswana",
+                "BY": "Bielorussie",
+                "BZ": ["Bélize","Belize"],
+                "CA": "Canada",
+                "CD": ["République démocratique du Congo","Republique democratique du Congo","rdc"],
+                "CF": ["République centrafricaine","Republique centrafricaine"],
+                "CG": ["République du Congo","Republique du Congo"],
+                "CH": "Suisse",
+                "CI": ["C\u00f4te d'Ivoire","cote d'ivoire"],
+                "CK": ["Îles cook","Iles Cook"],
+                "CL": "Chilie",
+                "CM": "Cameroun",
+                "CN": "Chine",
+                "CO": "Colombie",
+                "CR": "Costa Rica",
+                "CU": "Cuba",
+                "CV": "Cape Vert",
+                "CY": "Chypres",
+                "CZ": ["République Tchèque","Republique Tcheque","Tchequie"],
+                "DE": "Allemangne",
+                "DJ": "Djibouti",
+                "DK": "Danemark",
+                "DM": "Dominique",
+                "DO": ["République Dominiquaine","Republique Dominiquaine"],
+                "DZ": ["Algérie","Algerie"],
+                "EC": ["Équateur","Equateur"],
+                "EE": "Estonie",
+                "EG": ["Égypte","Egypte"],
+                "ER": ["Érythree","Erythrée","Erythree"],
+                "ES": "Espagne",
+                "ET": ["Éthiopie","Ethiopie"],
+                "FI": "Finlande",
+                "FJ": "Fidji",
+                "FM": ["Micronésie","Micronesie"],
+                "FR": "France",
+                "GA": "Gabon",
+                "GB": "Royaume Uni",
+                "GD": "Grenade",
+                "GE": ["Géorgie","Georgie"],
+                "GH": "Ghana",
+                "GM": "Gambie",
+                "GN": ["Guinée","Guinee"],
+                "GQ": ["Guinée Equatoriale","Guinee équatoriale"],
+                "GR": ["Grèce","Grece"],
+                "GT": "Guatemala",
+                "GW": ["Guinée Bissau","Guinee Bissau"],
+                "GY": "Guyana",
+                "HN": "Honduras",
+                "HR": "Croatie",
+                "HT": ["Haïti","Haiti","Haiti"],
+                "HU": "Hongrie",
+                "ID": ["Indonésie","Indonesie"],
+                "IE": "Irlande",
+                "IL": ["Israël","Israel","Israel"],
+                "IN": "Inde",
+                "IQ": "Irak",
+                "IR": "Iran",
+                "IS": "Islande",
+                "IT": "Italie",
+                "JM": ["Jamaïque","Jamaique"],
+                "JO": "Jordanie",
+                "JP": "Japon",
+                "KE": "Kenya",
+                "KG": "Kyrgyzstan",
+                "KH": "Cambodge",
+                "KI": "Kiribati",
+                "KM": "Comores",
+                "KP": ["Corée du nord","Coree du nord"],
+                "KR": ["Corée du sud","Coree du sud"],
+                "KW": ["Koweït","Koweit","Koweit"],
+                "KZ": "Kazakhstan",
+                "LA": "Laos",
+                "LC": "Sainte Lucie",
+                "LI": "Liechtenstein",
+                "LK": "Sri Lanka",
+                "LR": "Liberia",
+                "LS": "Lesotho",
+                "LT": "Lituanie",
+                "LU": "Luxembourg",
+                "LV": "Lettonie",
+                "LY": "Libye",
+                "MC": "Monaco",
+                "MD": "Moldovie",
+                "ME": ["Monténégro","Montenegro"],
+                "MF": "Saint Marin",
+                "MG": "Madagascar",
+                "MH": ["Îles marshall","Iles Marshall","Marshall"],
+                "MK": "Macedoine",
+                "ML": "Mali",
+                "MN": "Mongolie",
+                "MR": "Mauritanie",
+                "MT": "Malte",
+                "MV": "Maldives",
+                "MW": "Malawi",
+                "MX": "Mexico",
+                "MY": "Malaisie",
+                "MZ": "Mozambique",
+                "NA": "Namibie",
+                "NE": "Niger",
+                "NG": "Nigeria",
+                "NI": "Nicaragua",
+                "NL": "Pays Bas",
+                "NO": ["Norvège","Norvege"],
+                "NP": ["Népal","Nepal"],
+                "NR": "Nauru",
+                "NU": "Niue",
+                "NZ": ["Nouvelle Zélande","Nouvelle Zelande"],
+                "OM": "Oman",
+                "PA": "Panama",
+                "PE": ["Pérou","Perou"],
+                "PH": "Philippines",
+                "PK": "Pakistan",
+                "PL": "Pologne",
+                "PS": "Palestine",
+                "PT": "Portugal",
+                "PW": "Palaos",
+                "PY": "Paraguay",
+                "QA": "Qatar",
+                "RO": "Roumanie",
+                "RS": "Serbie",
+                "RU": "Russie",
+                "RW": "Rwanda",
+                "SA": ["Arabie Saoudite","arabie saoudite"],
+                "SB": "Salomon",
+                "SC": "Seychelles",
+                "SD": "Soudan",
+                "SE": ["Suède","Suede"],
+                "SG": "Singapour",
+                "SI": ["Slovénie","Slovenie"],
+                "SK": "Slovaquie",
+                "SL": "Sierra Leone",
+                "SM": "Saint Marin",
+                "SN": ["Sénégal","Senegal"],
+                "SO": "Somalie",
+                "SR": "Suriname",
+                "SS": "Soudan du sud",
+                "ST": ["São Tomé et Principe","Sao Tomé et Principe","Sao Tome et Principe"],
+                "SV": "Salvador",
+                "SZ": "Eswatini",
+                "TD": "Tchad",
+                "TG": "Togo",
+                "TH": "Thailande",
+                "TJ": "Tajikistan",
+                "TL": "Timor oriantal",
+                "TM": ["Turkménistan","Turkmenistan"],
+                "TN": "Tunisie",
+                "TO": "Tonga",
+                "TR": "Turquie",
+                "TT": ["Trinité et Tobago","Trinite et Tobago"],
+                "TV": "Tuvalu",
+                "TW": ["Taïwan","Taiwan","Taiwan"],
+                "TZ": "Tanzanie",
+                "UA": "Ukraine",
+                "UG": "Ouganda",
+                "UY": "Uruguay",
+                "UZ": ["Ouzbékistan","Ouzbekistan"],
+                "VA": "Vatican",
+                "VC": "Saint Vincent et les Grenadines",
+                "VE": ["Vénézuela","Venezuela"],
+                "VN": ["Viêt Nam","Viet Nam","Vietname"],
+                "VU": "Vanuatu",
+                "WS": "Samoa",
+                "XK": "Kosovo",
+                "YE": ["Yémen","Yemen"],
+                "ZA": "Afrique du sud",
+                "ZM": "Zambie",
+                "ZW": "Zimbabwe"
+            }`
+        let str = ""
+        let flagobj = JSON.parse(jsonstr)
+        var paysabr = Object.keys(flagobj)[Math.floor(Math.random() * 193)]
+        var time = 0
+        var continu = false
+        namep = flagobj[paysabr]
+        document.getElementById("img").src = "./png1000px/" + paysabr.toLowerCase() + ".png"
+        document.getElementById("s").addEventListener("keypress", ab => {
+            if (ab.key != "Enter") return
+            if (!continu) return start()
+            let submit = document.getElementById('s').value
+            let dif = parseInt(document.getElementById('dif').value)
+            let maj = document.getElementById("maj").checked
+            let tir = document.getElementById("tir").checked
+            let answer = false
+            if (dif == 3) maj = true
+            if (typeof namep == "string") {
+                let word = namep
+                if (!maj) {
+                    word = word.toLowerCase()
+                    submit = submit.toLowerCase()
+                }
+                if (!tir) {
+                    submit = submit.replace("-", " ")
+                } else {
+                    word = word.replace(" ", "-")
+                }
+                if (submit == word) {
+                    answer = true
+                    score += 1
+                }
+            }
+
+            else {
+                if (dif >= 2) {
+                    namep = namep.slice(0, -1)
+                }
+                if (dif == 3 && namep.length == 2) {
+                    namep = namep.slice(0, -1)
+                }
+                namep.forEach(a => {
+
+                    let word = a
+                    if (!maj) word = word.toLowerCase()
+                    if (submit == word) {
+                        answer = true
+                        score += 1
+                    }
+                })
+            }
+            if (!answer) {
+                // alert("                " + namep + `
+                //     majuscule : ${maj}
+                //     tirets : ${tir}`)
+            }
+            else {
+                document.getElementById("sc").innerText = score
+            }
+            document.getElementById('s').value = ""
+            paysabr = Object.keys(flagobj)[Math.floor(Math.random() * 193)]
+            namep = flagobj[paysabr]
+            document.getElementById("img").src = "./png1000px/" + paysabr.toLowerCase() + ".png"
+
+        })
+        function score1() {
+            score = 0
+            document.getElementById("sc").innerText = 0
+            return score
+        }
+        var timout
+        document.getElementById('srt').onclick = start
+        function start() {
+            score1()
+            time = 60
+            continu = true
+            countdown()
+            document.getElementById("img").style.display = "block"
+            document.getElementById('option').style.display = "none"
+            document.getElementById('play').style.display = "block"
+            timout = setTimeout(() => {
+                
+                continu = false
+                document.getElementById('s').value = ""
+                document.getElementById("option").style.display = "block"
+                document.getElementById('img').style.display = "none"
+                document.getElementById('play').style.display = "none"
+                if(score > pb){
+                    alert('gg vous avez pb avec le score de '+ score+' dpm (drapaux par minute)')
+                    pb = score
+                    document.getElementById("pb").innerText = pb
+                    setCookie("pb",pb,3000)
+                }
+                else{
+                    alert("vous avez eu le score de " + score + " dpm (drapeux par minute)")
+                }paysabr = Object.keys(flagobj)[Math.floor(Math.random() * 193)]
+                namep = flagobj[paysabr]
+                document.getElementById("img").src = "./png1000px/" + paysabr.toLowerCase() + ".png"
+            }, 60000)
+        }
+        document.getElementById('st').onclick = stoping
+
+        function stoping() {
+            continu = false
+            clearTimeout(timout)
+            document.getElementById('s').value = ""
+            document.getElementById("option").style.display = "block"
+            document.getElementById('img').style.display = "none"
+            document.getElementById('play').style.display = "none"
+            paysabr = Object.keys(flagobj)[Math.floor(Math.random() * 193)]
+            namep = flagobj[paysabr]
+            document.getElementById("img").src = "./png1000px/" + paysabr.toLowerCase() + ".png"
+        }
+        // countdown stuff
+        function countdown() {
+            if (continu) {
+                time -= 1
+                document.getElementById("timer").innerText = time
+                setTimeout(() => { countdown() }, 1000)
+            }
+            else {
+                document.getElementById("timer").innerText = 60
+            }
+        }
+
+    </script>
+</body>
+
+</html>
