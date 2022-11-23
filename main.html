@@ -88,9 +88,6 @@
                 <input type="checkbox" name="tir" id="tir">
                 <label for="tir">Tirets</label>
             </div>
-            <div class="pb">
-                PB: <p id="pb">0</p>
-            </div>
             <div class="s">
                 <input type="button" value="start" id="srt">
             </div>
@@ -110,36 +107,8 @@
         </div>
     </div>
     <script>
-        // script for cookie stuff
-        function setCookie(cname, cvalue, exdays) {
-            const d = new Date();
-            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-            let expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + "; SameSite=Lax;path=/";
-        }
-        function getCookie(cname) {
-            let name = cname + "=";
-            let decodedCookie = decodeURIComponent(document.cookie);
-            let ca = decodedCookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
-        var pb 
-        if(getCookie("pb")==""){
-            setCookie("pb",0,3000)
-            pb = 0
-        }
-        else{
-            pb = parseInt(getCookie('pb'))
-        }
+        
+        
         document.getElementById('s').value = ""
         var score = 0
         let jsonstr = `{
@@ -422,15 +391,8 @@
                 document.getElementById("option").style.display = "block"
                 document.getElementById('img').style.display = "none"
                 document.getElementById('play').style.display = "none"
-                if(score > pb){
-                    alert('gg vous avez pb avec le score de '+ score+' dpm (drapaux par minute)')
-                    pb = score
-                    document.getElementById("pb").innerText = pb
-                    setCookie("pb",pb,3000)
-                }
-                else{
-                    alert("vous avez eu le score de " + score + " dpm (drapeux par minute)")
-                }paysabr = Object.keys(flagobj)[Math.floor(Math.random() * 193)]
+                alert("vous avez eu le score de " + score + " dpm (drapaux par minute)")
+                paysabr = Object.keys(flagobj)[Math.floor(Math.random() * 193)]
                 namep = flagobj[paysabr]
                 document.getElementById("img").src = "./png1000px/" + paysabr.toLowerCase() + ".png"
             }, 60000)
